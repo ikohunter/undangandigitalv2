@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Editor Undangan</title>
+<style>
+:root{--bg:#0D1815;--s:#14231F;--line:#2A3F38;--gold:#D9BC7A;--mint:#B4E0A6;--cream:#F2EAD8;--mut:#9FB0A8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--cream);font:15px/1.6 system-ui,sans-serif;padding:20px 16px 120px}
+main{max-width:640px;margin:0 auto}
+h1{font:italic 600 34px Georgia,serif;color:var(--mint);margin:8px 0 4px}
+.hint{color:var(--mut);margin:0 0 20px}
+fieldset{border:1px solid var(--line);background:var(--s);padding:16px;margin:0 0 16px}
+legend{color:var(--gold);font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:12px;padding:0 8px}
+label{display:block;font-size:12px;color:var(--mut);margin:12px 0 4px}
+input,textarea{width:100%;background:var(--bg);color:var(--cream);border:1px solid var(--line);padding:10px 12px;font:inherit;border-radius:2px}
+input:focus,textarea:focus{outline:none;border-color:var(--gold)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.item{border-top:1px dashed var(--line);margin-top:14px;padding-top:4px}
+.item:first-of-type{border-top:0;margin-top:0}
+button{font:600 12px system-ui;letter-spacing:.14em;text-transform:uppercase;padding:12px 18px;border:1px solid var(--gold);background:var(--gold);color:#0D1815;cursor:pointer;border-radius:2px}
+button.g{background:transparent;color:var(--mint);border-color:var(--mint)}
+button.x{background:transparent;color:#E58B7B;border-color:#E58B7B;margin-top:10px;padding:8px 12px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--s);border-top:1px solid var(--line);padding:12px 16px;display:flex;gap:10px;justify-content:center}
+small{color:var(--mut)}
+</style>
+</head>
+<body>
+<main>
+<h1>Editor Undangan</h1>
+<p class="hint">Isi formulir, klik <b>Unduh config.js</b>, lalu timpa file <code>js/config.js</code> di folder undangan. Selesai.</p>
+
+<fieldset><legend>Mempelai Pria</legend>
+  <div class="row"><div><label>Nama panggilan</label><input data-k="groom.nick"></div><div><label>Nama lengkap</label><input data-k="groom.full"></div></div>
+  <div class="row"><div><label>Nama ayah</label><input data-k="groom.father"></div><div><label>Nama ibu</label><input data-k="groom.mother"></div></div>
+  <label>Instagram (tanpa @, boleh kosong)</label><input data-k="groom.instagram">
+</fieldset>
+
+<fieldset><legend>Mempelai Wanita</legend>
+  <div class="row"><div><label>Nama panggilan</label><input data-k="bride.nick"></div><div><label>Nama lengkap</label><input data-k="bride.full"></div></div>
+  <div class="row"><div><label>Nama ayah</label><input data-k="bride.father"></div><div><label>Nama ibu</label><input data-k="bride.mother"></div></div>
+  <label>Instagram (tanpa @, boleh kosong)</label><input data-k="bride.instagram">
+</fieldset>
+
+<fieldset><legend>Tanggal Hitung Mundur</legend>
+  <label>Tanggal &amp; jam (WIB)</label><input type="datetime-local" id="wd">
+</fieldset>
+
+<fieldset><legend>Acara</legend><div id="events"></div><br><button class="g" type="button" id="add-ev">+ Tambah acara</button></fieldset>
+
+<fieldset><legend>Kisah Cinta</legend><div id="story"></div><br><button class="g" type="button" id="add-st">+ Tambah cerita</button></fieldset>
+
+<fieldset><legend>Hadiah / Rekening</legend><div id="acc"></div><br><button class="g" type="button" id="add-ac">+ Tambah rekening</button>
+  <label>Alamat pengiriman hadiah (kosongkan jika tidak perlu)</label><textarea data-k="gift.address" rows="2"></textarea>
+</fieldset>
+
+<fieldset><legend>Lainnya</legend>
+  <label>Instagram di bagian bawah (tanpa @)</label><input data-k="instagram">
+  <label>Lagu: tempel link YouTube (kosongkan = tanpa musik)</label><input id="yt" placeholder="https://www.youtube.com/watch?v=..." inputmode="url">
+  <small id="yt-msg"></small>
+  <label>Link Google Apps Script untuk RSVP &amp; ucapan (boleh kosong)</label><input data-k="scriptURL">
+  <label>Alamat website undangan untuk tombol bagikan (boleh kosong)</label><input data-k="share.baseUrl">
+</fieldset>
+</main>
+
+<div class="bar"><button id="dl" type="button">Unduh config.js</button><button class="g" id="cp" type="button">Salin teks</button></div>
+
+<script src="js/config.js"></script>
+<script>
+const C = JSON.parse(JSON.stringify(CONFIG));
+const $ = s => document.querySelector(s);
+const get = (o, p) => p.split(".").reduce((a, k) => a && a[k], o);
+const set = (o, p, v) => { const a = p.split("."); const l = a.pop(); a.reduce((x, k) => x[k], o)[l] = v; };
+
+// kolom sederhana
+document.querySelectorAll("[data-k]").forEach(i => { i.value = get(C, i.dataset.k) ?? ""; i.addEventListener("input", () => set(C, i.dataset.k, i.value)); });
+
+// lagu: link YouTube -> kode video
+const parseYT = v => { v = v.trim(); if (!v) return ""; const x = v.match(/(?:youtu\.be\/|[?&]v=|\/embed\/|\/shorts\/|\/live\/|\/v\/)([\w-]{11})/) || v.match(/^([\w-]{11})$/); return x ? x[1] : null; };
+const yt = $("#yt"), ytm = $("#yt-msg");
+if (C.music.youtubeId) yt.value = "https://youtu.be/" + C.music.youtubeId;
+const ytCheck = () => {
+  const v = yt.value.trim();
+  if (/tiktok\.com/i.test(v)) { ytm.textContent = "Link TikTok tidak bisa diputar di undangan. Cari lagu yang sama di YouTube lalu tempel linknya."; ytm.style.color = "#E58B7B"; return; }
+  const id = parseYT(v);
+  if (id === null) { ytm.textContent = "Link belum dikenali. Pakai link dari YouTube."; ytm.style.color = "#E58B7B"; return; }
+  C.music.youtubeId = id; ytm.style.color = "#B4E0A6"; ytm.textContent = id ? "Terbaca: " + id : "Tanpa musik.";
+};
+yt.addEventListener("input", ytCheck); ytCheck();
+
+// tanggal <-> ISO WIB
+const toLocal = iso => iso ? iso.slice(0, 16) : "";
+const toIso = v => v ? v + ":00+07:00" : "";
+$("#wd").value = toLocal(C.weddingDate);
+$("#wd").addEventListener("input", e => C.weddingDate = toIso(e.target.value));
+
+// daftar dinamis
+function list(box, arr, fields, blank, add) {
+  const draw = () => {
+    box.replaceChildren();
+    arr.forEach((it, n) => {
+      const d = document.createElement("div"); d.className = "item";
+      fields.forEach(([k, label, type]) => {
+        const l = document.createElement("label"); l.textContent = label;
+        const i = document.createElement(type === "area" ? "textarea" : "input");
+        if (type === "dt") i.type = "datetime-local";
+        i.value = type === "dt" ? toLocal(it[k]) : (it[k] ?? "");
+        i.addEventListener("input", () => it[k] = type === "dt" ? toIso(i.value) : i.value);
+        d.append(l, i);
+      });
+      const x = document.createElement("button"); x.type = "button"; x.className = "x"; x.textContent = "Hapus";
+      x.onclick = () => { arr.splice(n, 1); draw(); }; d.append(x); box.append(d);
+    });
+  };
+  $(add).onclick = () => { arr.push({ ...blank }); draw(); };
+  draw();
+}
+list($("#events"), C.events, [["title","Nama acara (mis. Akad Nikah)"],["start","Mulai (WIB)","dt"],["end","Selesai (WIB)","dt"],["timeLabel","Tulisan jam (mis. 08.00 WIB s.d. selesai)"],["place","Nama tempat"],["address","Alamat lengkap","area"],["maps","Link Google Maps"]],
+  { title:"", start:"", end:"", timeLabel:"", place:"", address:"", maps:"" }, "#add-ev");
+list($("#story"), C.story, [["year","Judul kecil (mis. Awal Cerita)"],["title","Judul"],["text","Isi cerita","area"]], { year:"", title:"", text:"" }, "#add-st");
+list($("#acc"), C.gift.accounts, [["bank","Bank / e-wallet"],["number","Nomor rekening"],["name","Atas nama"]], { bank:"", number:"", name:"" }, "#add-ac");
+
+// hasilkan config.js
+function out() {
+  const o = JSON.parse(JSON.stringify(C));
+  o.gift.enabled = o.gift.accounts.length > 0 || !!o.gift.address;
+  return "/* ===== KONFIGURASI — dibuat dari editor.html ===== */\nconst CONFIG = " + JSON.stringify(o, null, 2) + ";\n";
+}
+$("#dl").onclick = () => { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([out()], { type: "text/javascript" })); a.download = "config.js"; a.click(); };
+$("#cp").onclick = async e => { try { await navigator.clipboard.writeText(out()); e.target.textContent = "Tersalin"; } catch { e.target.textContent = "Gagal"; } setTimeout(() => e.target.textContent = "Salin teks", 1500); };
+</script>
+</body>
+</html>

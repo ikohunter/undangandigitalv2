@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="theme-color" content="#241A33">
+<title>The Wedding Of</title>
+<meta name="description" content="Undangan pernikahan digital">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri&family=Bodoni+Moda:ital,wght@0,500;1,400;1,500&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="locked">
+
+<div id="cover">
+  <div class="arch">
+    <p class="bismillah" aria-label="Bismillahirrahmanirrahim">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
+    <p class="eyebrow">The Wedding Of</p>
+    <h1 class="names" id="cover-names"></h1>
+    <p class="date" id="cover-date"></p>
+  </div>
+  <p class="to">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+  <p class="guest" id="guest-name">Tamu Undangan</p>
+  <button class="btn" id="open-btn" type="button">Buka Undangan</button>
+  <p class="note">Undangan ini diiringi wedding nasheed</p>
+</div>
+
+<button id="music-btn" type="button" aria-label="Putar atau jeda musik">♪</button>
+
+<main id="main">
+  <section id="home">
+    <p class="bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
+    <p class="eyebrow">Kami akan menikah</p>
+    <h2 class="names" id="hero-names"></h2>
+    <p class="date" id="hero-date"></p>
+  </section>
+
+  <section id="ayat" data-sec="ayat">
+    <p class="ar">وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ۚ إِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ</p>
+    <p class="quote">“Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang. Sungguh, pada yang demikian itu benar-benar terdapat tanda-tanda (kebesaran Allah) bagi kaum yang berpikir.”</p>
+    <p class="ref">QS. Ar-Rum: 21</p>
+  </section>
+
+  <section id="couple">
+    <h2 class="h2">Mempelai</h2>
+    <p class="salam">Assalamu’alaikum warahmatullahi wabarakatuh. Dengan memohon rahmat dan ridha Allah SWT, kami mengundang Anda untuk menyaksikan dan mendoakan pernikahan kami.</p>
+    <div class="couple" id="couple-grid"></div>
+  </section>
+
+  <section id="countdown-sec" data-sec="countdown">
+    <h2 class="h2">Menuju Hari Bahagia</h2>
+    <div class="cd"><div><b id="cd-d">0</b><span>Hari</span></div><div><b id="cd-h">00</b><span>Jam</span></div><div><b id="cd-m">00</b><span>Menit</span></div><div><b id="cd-s">00</b><span>Detik</span></div></div>
+  </section>
+
+  <section id="event" data-sec="event">
+    <h2 class="h2">Acara</h2>
+    <div id="events"></div>
+  </section>
+
+  <section id="story" data-sec="story">
+    <h2 class="h2">Kisah Kami</h2>
+    <div class="tl" id="story-list"></div>
+  </section>
+
+  <section id="rsvp" data-sec="rsvp">
+    <h2 class="h2">Konfirmasi Kehadiran</h2>
+    <div id="rsvp-box"></div>
+  </section>
+
+  <section id="wishes" data-sec="wishes">
+    <h2 class="h2">Ucapan &amp; Doa</h2>
+    <div id="wishes-box"></div>
+  </section>
+
+  <section id="gift" data-sec="gift">
+    <h2 class="h2">Hadiah</h2>
+    <p class="sub">Doa restu Anda adalah hadiah terbaik. Bila ingin berbagi kebahagiaan, tersedia pilihan berikut.</p>
+    <div id="accounts"></div>
+    <div class="card" id="address-card"><p class="label">Alamat Pengiriman</p><p id="gift-address"></p><button class="btn ghost" type="button" data-copy-address>Salin alamat</button></div>
+  </section>
+
+  <footer>
+    <p class="doa">Barakallahu laka wa baraka ‘alaika wa jama‘a bainakuma fi khair.</p>
+    <p>Merupakan kehormatan bagi kami atas kehadiran dan doa restu Anda. Wassalamu’alaikum warahmatullahi wabarakatuh.</p>
+    <p class="names small" id="foot-names"></p>
+    <a id="foot-ig" class="ig" href="#" target="_blank" rel="noopener"></a>
+    <button class="btn" id="share-btn" type="button">Bagikan via WhatsApp</button>
+  </footer>
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/music.js"></script>
+<script src="js/countdown.js"></script>
+<script src="js/rsvp.js"></script>
+<script src="js/wishes.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
